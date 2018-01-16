@@ -1,5 +1,9 @@
 const {html, render} = require('../node_modules/lit-html/lit-html.js'); 
 
+const MyComponentTemplate = (name, foo) => html`
+  <div>Hello, ${name}! (${foo})</div>
+`;
+
 class MyComponent extends HTMLElement {
   constructor() {
     super();
@@ -7,21 +11,28 @@ class MyComponent extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['name'];
+    return ['name', 'foo'];
   }
 
-  attributeChangedCallback() {
+  get name() {
+    return this._name === undefined ? 'Benjamin' : this._name;
+  }
+
+  get foo() {
+    return this._foo === undefined ? 2 : this._foo;
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    switch(attrName) {
+      case 'name': this._name = newValue; break;
+      case 'foo': this._foo = parseInt(newValue, 10); break;
+    }
+
     this.renderCallback();
   }
 
-  getAttributes() {
-    return {
-      name: this.getAttribute('name')
-    };
-  }
-
-  renderCallback({name} = this.getAttributes()) {
-    render(html`Hello, ${name}!`, this);
+  renderCallback() {
+    render(MyComponentTemplate(this.name, this.foo), this);
   }
 }
 
