@@ -7,6 +7,11 @@ const MyComponentTemplate = (name, foo) => html`
 class MyComponent extends HTMLElement {
   constructor() {
     super();
+
+    // Defaults
+    this.name = 'Benjamin';
+    this.foo = 2;
+
     this.renderCallback();
   }
 
@@ -14,18 +19,10 @@ class MyComponent extends HTMLElement {
     return ['name', 'foo'];
   }
 
-  get name() {
-    return this._name === undefined ? 'Benjamin' : this._name;
-  }
-
-  get foo() {
-    return this._foo === undefined ? 2 : this._foo;
-  }
-
   attributeChangedCallback(attrName, oldValue, newValue) {
     switch(attrName) {
-      case 'name': this._name = newValue; break;
-      case 'foo': this._foo = parseInt(newValue, 10); break;
+      case 'name': this.name = newValue; break;
+      case 'foo': this.foo = parseInt(newValue, 10); break;
     }
 
     this.renderCallback();
